@@ -24,6 +24,7 @@ model user{
 
 
 model Movie{
+  
    
   name String @unique
   genre String

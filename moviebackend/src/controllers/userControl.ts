@@ -65,3 +65,28 @@ export const login = async (req: Request, res: Response) => {
     return res.status(400).json(error);
   }
 };
+
+export const selectMovie = async (req: any, res: Response) => {
+  const userId = req.user.id;
+  const name: string = req.body.name;
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+
+  const movie = await prisma.movie.findFirst({ where: { name: name } });
+
+  if (!user || !movie) {
+    return res.status(403).json({ msg: "No user or movie is found" });
+  }
+
+  try {
+    await prisma.user.update({
+      where: { id: userId },
+      data: { movies: { connect: { name: name } } },
+    });
+
+    return res
+      .status(200)
+      .json(`${movie.name} is selected by user ${user.name}`);
+  } catch (error) {
+    res.status(500).json({ msg: error });
+  }
+};
