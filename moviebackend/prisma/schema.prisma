@@ -17,6 +17,7 @@ model user{
   password String
  
  movies Movie[]
+ watchlist watchList[]
  createdAt DateTime @default(now())
  role Role @default(Viewer)
 
@@ -24,13 +25,28 @@ model user{
 
 
 model Movie{
-  
+  id Int @id @default(autoincrement())
    
   name String @unique
   genre String
   viewer user @relation(fields: [viewerId],references: [id])
   viewerId Int
+  watchList watchList[]
+
+
   
+}
+
+model watchList{
+  id Int @id @default(autoincrement())
+  userId Int
+  movieId Int
+  createdAt DateTime @default(now())
+  User user @relation(fields: [userId], references: [id])
+  
+  movie Movie @relation(fields: [movieId], references: [id])
+
+
 }
 
 enum Role{
