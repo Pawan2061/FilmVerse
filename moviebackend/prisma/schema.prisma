@@ -16,7 +16,6 @@ model user{
   email String 
   password String
  
- movies Movie[]
  watchlist watchList[]
  createdAt DateTime @default(now())
  role Role @default(Viewer)
@@ -29,8 +28,6 @@ model Movie{
    
   name String @unique
   genre String
-  viewer user @relation(fields: [viewerId],references: [id])
-  viewerId Int
   watchList watchList[]
 
 

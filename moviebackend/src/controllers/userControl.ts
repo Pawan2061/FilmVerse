@@ -58,7 +58,7 @@ export const login = async (req: Request, res: Response) => {
     if (!loggedinUser) {
       return res.status(404).json({ msg: "No such user found" });
     }
-    const payload = { id: loggedinUser.id };
+    const payload = { id: loggedinUser.id, role: loggedinUser.role };
     const token: any = await createToken(payload);
     return res.status(200).json({ token: token });
   } catch (error) {
@@ -66,27 +66,60 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
-export const selectMovie = async (req: any, res: Response) => {
-  const userId = req.user.id;
-  const name: string = req.body.name;
-  const user = await prisma.user.findUnique({ where: { id: userId } });
+// export const selectMovie = async (req: any, res: Response) => {
+//   const userId = req.user.id;
+//   const name: string = req.body.name;
+//   const user = await prisma.user.findUnique({ where: { id: userId } });
 
-  const movie = await prisma.movie.findFirst({ where: { name: name } });
+//   const movie = await prisma.movie.findFirst({ where: { name: name } });
 
-  if (!user || !movie) {
-    return res.status(403).json({ msg: "No user or movie is found" });
-  }
+//   if (!user || !movie) {
+//     return res.status(403).json({ msg: "No user or movie is found" });
+//   }
 
+//   try {
+//     await prisma.user.update({
+//       where: { id: userId },
+//       data: { movies: { connect: { name: name } } },
+//     });
+
+//     return res
+//       .status(200)
+//       .json(`${movie.name} is selected by user ${user.name}`);
+//   } catch (error) {
+//     res.status(500).json({ msg: error });
+//   }
+// };
+
+export const updateUser = async (req: any, res: Response) => {
   try {
-    await prisma.user.update({
-      where: { id: userId },
-      data: { movies: { connect: { name: name } } },
+    const updatedUser = await prisma.user.update({
+      where: {
+        id: req.user.id,
+      },
+      data: {
+        name: req.body.name,
+      },
+    });
+    return res.status(200).json({ msg: `${updatedUser.name} is updated` });
+  } catch (error) {
+    res.status(500).json({ msg: error });
+  }
+};
+
+export const deleteUser = async (req: any, res: Response) => {
+  try {
+    const deletedUser = await prisma.user.delete({
+      where: {
+        id: req.user.id,
+      },
     });
 
     return res
       .status(200)
-      .json(`${movie.name} is selected by user ${user.name}`);
+      .json({ msg: `${deletedUser.name} is deleted from the database` });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ msg: error });
   }
 };

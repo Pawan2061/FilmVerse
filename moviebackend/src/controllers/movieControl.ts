@@ -16,7 +16,6 @@ export const addMovie = async (req: any, res: Response) => {
       data: {
         name: name,
         genre: genre,
-        viewerId: userId,
       },
     });
 
