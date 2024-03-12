@@ -58,6 +58,8 @@ export const login = async (req: Request, res: Response) => {
     if (!loggedinUser) {
       return res.status(404).json({ msg: "No such user found" });
     }
+    console.log(loggedinUser);
+
     const payload = { id: loggedinUser.id, role: loggedinUser.role };
     const token: any = await createToken(payload);
     return res.status(200).json({ token: token });

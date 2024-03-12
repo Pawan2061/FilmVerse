@@ -33,5 +33,23 @@ export const getReviews = async (req: any, res: any) => {
     console.log(reviews);
 
     return res.status(200).json({ msg: reviews });
-  } catch (error) {}
+  } catch (error) {
+    return res.status(200).json({ msg: error });
+  }
+};
+
+export const deleteReview = async (req: any, res: any) => {
+  try {
+    const deletedReview = await prisma.review.delete({
+      where: {
+        id: +req.params.id,
+        userId: req.user.id,
+      },
+    });
+    return res.status(200).json({
+      msg: `${deletedReview.comment} is deleted from the movie reviews`,
+    });
+  } catch (error) {
+    return res.status(200).json({ msg: error });
+  }
 };
