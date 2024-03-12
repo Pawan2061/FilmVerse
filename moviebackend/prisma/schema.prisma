@@ -10,7 +10,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model user{
+model User{
   id Int @id @default(autoincrement())
   name String
   email String 
@@ -19,6 +19,8 @@ model user{
  watchlist watchList[]
  createdAt DateTime @default(now())
  role Role @default(Viewer)
+ review Review[]
+ 
 
 }
 
@@ -29,6 +31,9 @@ model Movie{
   name String @unique
   genre String
   watchList watchList[]
+  reviews Review[]
+
+
 
 
   
@@ -39,12 +44,31 @@ model watchList{
   userId Int
   movieId Int
   createdAt DateTime @default(now())
-  User user @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id])
   
   movie Movie @relation(fields: [movieId], references: [id])
 
 
 }
+
+model Review{
+  id Int @unique @default(autoincrement())
+
+
+  comment String 
+  createdAt DateTime @default(now())
+  movieId Int
+   
+  userId Int
+  movie Movie @relation(fields: [movieId], references: [id])
+  user User @relation(fields: [userId],references: [id])
+
+  
+ 
+
+}
+
+
 
 enum Role{
   Viewer
