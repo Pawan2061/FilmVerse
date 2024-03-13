@@ -21,6 +21,7 @@ export const getReviews = async (req: any, res: any) => {
   try {
     const reviews = await prisma.review.findMany({
       where: {
+        userId: req.user.id,
         movieId: +req.params.id,
       },
     });
@@ -46,9 +47,29 @@ export const deleteReview = async (req: any, res: any) => {
         userId: req.user.id,
       },
     });
+
     return res.status(200).json({
       msg: `${deletedReview.comment} is deleted from the movie reviews`,
     });
+  } catch (error) {
+    return res.status(200).json({ msg: error });
+  }
+};
+
+export const updateReview = async (req: any, res: any) => {
+  try {
+    const updatedReview = await prisma.review.update({
+      where: {
+        id: +req.params.id,
+        userId: req.user.id,
+      },
+      data: {
+        comment: req.body.comment,
+      },
+    });
+    console.log(updatedReview);
+
+    return res.status(200).json({ msg: updatedReview });
   } catch (error) {
     return res.status(200).json({ msg: error });
   }
