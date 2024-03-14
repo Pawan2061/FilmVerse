@@ -53,3 +53,20 @@ export const deleteWatchlist = async (req: any, res: Response) => {
     res.status(400).json(error);
   }
 };
+
+export const isWatched = async (req: any, res: any) => {
+  try {
+    const watchList = await prisma.watchList.findFirst({
+      where: {
+        movieId: +req.params.id,
+        userId: req.user.id,
+      },
+    });
+    if (watchList) {
+      return res.status(200).json({ data: true });
+    }
+    return res.status(400).json({ data: false });
+  } catch (error) {
+    res.status(400).json(error);
+  }
+};

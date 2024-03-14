@@ -1,7 +1,12 @@
 import { PrismaClient } from "@prisma/client";
+import { review } from "../zod-validation/reviewValidation";
 const prisma = new PrismaClient();
 
 export const createReview = async (req: any, res: any) => {
+  const safeParse = review.safeParse(req.body);
+  if (!safeParse) {
+    return res.status(403).json({ msg: "the input values are wrong" });
+  }
   try {
     const newReview = await prisma.review.create({
       data: {
