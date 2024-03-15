@@ -1,4 +1,6 @@
 import { Request, Response } from "express";
+const multer = require("multer");
+const upload = multer({ dest: "uploads/" });
 
 import { PrismaClient } from "@prisma/client";
 import { createToken } from "../middleware/createToken";
@@ -68,31 +70,6 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
-// export const selectMovie = async (req: any, res: Response) => {
-//   const userId = req.user.id;
-//   const name: string = req.body.name;
-//   const user = await prisma.user.findUnique({ where: { id: userId } });
-
-//   const movie = await prisma.movie.findFirst({ where: { name: name } });
-
-//   if (!user || !movie) {
-//     return res.status(403).json({ msg: "No user or movie is found" });
-//   }
-
-//   try {
-//     await prisma.user.update({
-//       where: { id: userId },
-//       data: { movies: { connect: { name: name } } },
-//     });
-
-//     return res
-//       .status(200)
-//       .json(`${movie.name} is selected by user ${user.name}`);
-//   } catch (error) {
-//     res.status(500).json({ msg: error });
-//   }
-// };
-
 export const updateUser = async (req: any, res: Response) => {
   try {
     const updatedUser = await prisma.user.update({
@@ -123,5 +100,15 @@ export const deleteUser = async (req: any, res: Response) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ msg: error });
+  }
+};
+
+export const uploadProfile = async (req: any, res: any) => {
+  try {
+    const file = req.file;
+    console.log(file);
+    return res.status(200).json(file);
+  } catch (error) {
+    return res.status(500).json({ msg: error });
   }
 };

@@ -15,6 +15,8 @@ model User{
   name String
   email String 
   password String
+  profilePicture String?
+  
  
  watchlist watchList[]
  createdAt DateTime @default(now())
