@@ -1,4 +1,5 @@
 import { v2 as cloudinary } from "cloudinary";
+import { Request, Response } from "express";
 import fs from "fs";
 
 cloudinary.config({
@@ -7,7 +8,11 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-const uploadOnCloudinary = async (localFilePath: any, res: any, req: any) => {
+const uploadOnCloudinary = async (
+  localFilePath: any,
+  res: Response,
+  req: Request
+) => {
   try {
     if (!localFilePath) {
       return res.status(404).json({ msg: "couldnt find the cloud path" });

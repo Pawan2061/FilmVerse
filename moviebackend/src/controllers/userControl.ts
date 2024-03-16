@@ -4,6 +4,7 @@ const upload = multer({ dest: "uploads/" });
 
 import { PrismaClient } from "@prisma/client";
 import { createToken } from "../middleware/createToken";
+import { uploadOnCloudinary } from "../utils/cloudinary";
 import { User } from "../zod-validation/user-validation";
 const prisma = new PrismaClient();
 
@@ -107,6 +108,22 @@ export const uploadProfile = async (req: any, res: any) => {
   try {
     const file = req.file;
     console.log(file);
+    const output = await uploadOnCloudinary(file.path, res, req);
+    console.log(output);
+
+    const userId = req.user.id;
+
+    // const updatedProfile=await prisma.user.update({
+    //   where:{
+    //     id:userId
+
+    //   },
+    //   data:{
+    //     profilePicture:output.
+
+    //   }
+    // })
+    // TODO: Add this to user schema
     return res.status(200).json(file);
   } catch (error) {
     return res.status(500).json({ msg: error });

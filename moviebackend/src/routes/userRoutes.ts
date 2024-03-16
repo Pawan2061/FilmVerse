@@ -17,7 +17,11 @@ export const userRouter = express.Router();
 
 userRouter.post("/signUp", signUp);
 userRouter.post("/login", login);
-userRouter.post("/profilePic/:id", upload.single("file"), uploadProfile);
+userRouter.post(
+  "/profilePic/:id",
+  [upload.single("file"), jwtAuth],
+  uploadProfile
+);
 userRouter.get("/", findUsers);
 
 userRouter.put("/", jwtAuth, updateUser);
