@@ -1,23 +1,32 @@
 import { PrismaClient } from "@prisma/client";
 import { Response } from "express";
+import { uploadOnCloudinary } from "../utils/cloudinary";
 import { Movie } from "../zod-validation/movie-validation";
 const prisma = new PrismaClient();
 
-export const addMovie = async (req: any, res: Response) => {
-  const { name, genre } = req.body;
-  const userId = req.user.id;
+export const addMovie = async (req: any, res: any) => {
   const validate = Movie.safeParse(req.body);
   if (!validate) {
     return res.status(400).send("Incorrect inputs");
   }
 
   try {
+    const thumbnailresponse: any = await uploadOnCloudinary(
+      req.file.path,
+      req,
+      res
+    );
     const newMovie = await prisma.movie.create({
       data: {
-        name: name,
-        genre: genre,
+        name: req.body.name,
+        genre: req.body.genre,
+        movieThumbnail: thumbnailresponse,
+        description: req.body.description,
       },
     });
+    console.log(newMovie);
+
+    console.log(thumbnailresponse);
 
     return res.status(200).json({ newMovie });
   } catch (error) {

@@ -8,7 +8,7 @@ import { uploadOnCloudinary } from "../utils/cloudinary";
 import { User } from "../zod-validation/user-validation";
 const prisma = new PrismaClient();
 
-export const signUp = async (req: Request, res: Response) => {
+export const signUp = async (req: any, res: any) => {
   try {
     const inputData = req.body;
 
@@ -18,17 +18,27 @@ export const signUp = async (req: Request, res: Response) => {
     }
     console.log(inputData);
 
+    console.log(req.file);
+    const imageResponse: any = await uploadOnCloudinary(
+      req.file.path,
+      req,
+      res
+    );
+
     const newUser = await prisma.user.create({
       data: {
         name: inputData.name,
         email: inputData.email,
         password: inputData.password,
+        profilePicture: imageResponse,
       },
     });
 
     return res.status(200).json({
       name: newUser.name,
       email: newUser.email,
+      profile: newUser.profilePicture,
+
       createdAt: newUser.createdAt,
     });
   } catch (error) {
@@ -36,6 +46,7 @@ export const signUp = async (req: Request, res: Response) => {
     return res.status(400).json({ msg: error });
   }
 };
+
 export const findUsers = async (req: Request, res: Response) => {
   try {
     const users = await prisma.user.findMany();
@@ -101,31 +112,5 @@ export const deleteUser = async (req: any, res: Response) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ msg: error });
-  }
-};
-
-export const uploadProfile = async (req: any, res: any) => {
-  try {
-    const file = req.file;
-    console.log(file);
-    const output = await uploadOnCloudinary(file.path, res, req);
-    console.log(output);
-
-    const userId = req.user.id;
-
-    // const updatedProfile=await prisma.user.update({
-    //   where:{
-    //     id:userId
-
-    //   },
-    //   data:{
-    //     profilePicture:output.
-
-    //   }
-    // })
-    // TODO: Add this to user schema
-    return res.status(200).json(file);
-  } catch (error) {
-    return res.status(500).json({ msg: error });
   }
 };

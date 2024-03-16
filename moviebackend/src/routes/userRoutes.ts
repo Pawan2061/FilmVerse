@@ -6,22 +6,27 @@ import {
   login,
   signUp,
   updateUser,
-  uploadProfile,
 } from "../controllers/userControl";
 
-const upload = multer({ dest: "uploads/" });
+const storage = multer.diskStorage({
+  destination: function (req: any, file: any, cb: any) {
+    cb(null, "uploads");
+  },
+  filename: function (req: any, file: any, cb: any) {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, file.fieldname + "-" + uniqueSuffix);
+  },
+});
+
+const upload = multer({ storage: storage });
 
 import { protect } from "../middleware/protect";
 import { jwtAuth } from "../middleware/verifyToken";
 export const userRouter = express.Router();
 
-userRouter.post("/signUp", signUp);
+userRouter.post("/signUp", upload.single("file"), signUp);
 userRouter.post("/login", login);
-userRouter.post(
-  "/profilePic/:id",
-  [upload.single("file"), jwtAuth],
-  uploadProfile
-);
+
 userRouter.get("/", findUsers);
 
 userRouter.put("/", jwtAuth, updateUser);

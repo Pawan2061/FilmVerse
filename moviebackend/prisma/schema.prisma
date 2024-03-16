@@ -32,6 +32,8 @@ model Movie{
    
   name String @unique
   genre String
+  description String @default(" ")
+  movieThumbnail String?
   watchList watchList[]
   reviews Review[]
 
