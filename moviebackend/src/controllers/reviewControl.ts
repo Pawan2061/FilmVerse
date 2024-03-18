@@ -1,12 +1,13 @@
 import { PrismaClient } from "@prisma/client";
-import { review } from "../zod-validation/reviewValidation";
 const prisma = new PrismaClient();
 
 export const createReview = async (req: any, res: any) => {
-  const safeParse = review.safeParse(req.body);
-  if (!safeParse) {
-    return res.status(403).json({ msg: "the input values are wrong" });
-  }
+  // const validate = review.safeParse(req.body);
+  // console.log(validate.success);
+  // if (!validate.success) {
+  //   return res.status(403).json({ msg: "the input values are wrong" });
+  // }
+
   try {
     const newReview = await prisma.review.create({
       data: {
@@ -15,6 +16,7 @@ export const createReview = async (req: any, res: any) => {
         movieId: +req.params.id,
       },
     });
+    console.log("context");
 
     res.status(200).json({ data: newReview });
   } catch (error) {

@@ -6,7 +6,8 @@ const prisma = new PrismaClient();
 
 export const addMovie = async (req: any, res: any) => {
   const validate = Movie.safeParse(req.body);
-  if (!validate) {
+
+  if (!validate.success) {
     return res.status(400).send("Incorrect inputs");
   }
 
@@ -26,17 +27,21 @@ export const addMovie = async (req: any, res: any) => {
     });
     console.log(newMovie);
 
-    console.log(thumbnailresponse);
-
     return res.status(200).json({ newMovie });
   } catch (error) {
-    return res.status(404).json({ error });
+    console.log(error);
+
+    return res.status(404).json({ error: error });
   }
 };
 
 export const getMovies = async (req: any, res: Response) => {
   try {
-    const movies = await prisma.movie.findMany();
+    const movies = await prisma.movie.findMany({
+      include: {
+        reviews: true,
+      },
+    });
 
     if (!movies) {
       return res.status(404).json({ msg: "No movies are available" });
