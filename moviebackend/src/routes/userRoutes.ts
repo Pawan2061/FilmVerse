@@ -1,5 +1,6 @@
 import express from "express";
 import multer from "multer";
+
 import {
   deleteUser,
   findUsers,
@@ -23,6 +24,8 @@ const upload = multer({ storage: storage });
 import { protect } from "../middleware/protect";
 import { jwtAuth } from "../middleware/verifyToken";
 export const userRouter = express.Router();
+export const oauthRouter = express.Router();
+const oauthController = require("../controllers/oauthcontroller");
 
 userRouter.post("/signUp", upload.single("file"), signUp);
 userRouter.post("/login", login);
@@ -31,3 +34,5 @@ userRouter.get("/", findUsers);
 
 userRouter.put("/", jwtAuth, updateUser);
 userRouter.delete("/", [jwtAuth, protect], deleteUser);
+oauthRouter.get("/", oauthController.googleLogin);
+oauthRouter.get("/callback", oauthController.googleCallback);
