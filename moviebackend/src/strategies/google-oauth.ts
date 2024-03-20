@@ -1,6 +1,5 @@
 import { PrismaClient } from "@prisma/client";
 import passport from "passport";
-import { Url } from "url";
 const prisma = new PrismaClient();
 
 var GoogleStrategy = require("passport-google-oauth2").Strategy;
@@ -11,7 +10,7 @@ interface types {
   email: string;
   given_name: string;
   name: string;
-  photos: Url;
+  photos: any;
 }
 passport.use(
   new GoogleStrategy(
@@ -43,6 +42,7 @@ passport.use(
         create: {
           email: email,
           name: given_name,
+          profilePicture: photos[0].value,
         },
       });
 
