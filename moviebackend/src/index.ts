@@ -7,6 +7,16 @@ import { oauthRouter, userRouter } from "./routes/userRoutes";
 import { watchListRouter } from "./routes/watchlistRouter";
 
 const app = express();
+// app.use(
+//   session({
+//     secret: process.env.SESSION_SECRET_KEY,
+//     resave: false,
+//     saveUninitialized: false,
+//   })
+// );
+// app.use(passport.initialize());
+// app.use(passport.session());
+
 app.use(express.json());
 app.use("/api/user", userRouter);
 app.use("/auth/google", oauthRouter);

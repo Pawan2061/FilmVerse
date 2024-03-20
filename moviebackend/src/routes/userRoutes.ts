@@ -21,7 +21,6 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-import { protect } from "../middleware/protect";
 import { jwtAuth } from "../middleware/verifyToken";
 export const userRouter = express.Router();
 export const oauthRouter = express.Router();
@@ -33,6 +32,6 @@ userRouter.post("/login", login);
 userRouter.get("/", findUsers);
 
 userRouter.put("/", jwtAuth, updateUser);
-userRouter.delete("/", [jwtAuth, protect], deleteUser);
+userRouter.delete("/:id", deleteUser);
 oauthRouter.get("/", oauthController.googleLogin);
 oauthRouter.get("/callback", oauthController.googleCallback);

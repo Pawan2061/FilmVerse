@@ -16,14 +16,14 @@ export const signUp = async (req: any, res: any) => {
     if (!isValidData) {
       return res.status(403).json({ msg: "Invalid inputs" });
     }
-    console.log(inputData);
 
-    console.log(req.file);
+    console.log(req.file.path);
     const imageResponse: any = await uploadOnCloudinary(
       req.file.path,
       req,
       res
     );
+    console.log(imageResponse);
 
     const newUser = await prisma.user.create({
       data: {
