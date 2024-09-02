@@ -8,7 +8,7 @@ import {
   signUp,
   updateUser,
 } from "../controllers/userControl";
-
+const gitpassport=require("../strategies/github-oauth")
 const storage = multer.diskStorage({
   destination: function (req: any, file: any, cb: any) {
     cb(null, "uploads");
@@ -32,6 +32,23 @@ userRouter.post("/login", login);
 userRouter.get("/", findUsers);
 
 userRouter.put("/", jwtAuth, updateUser);
-userRouter.delete("/:id", deleteUser);
+userRouter.delete("/:id", deleteUser)
+
+
+
+userRouter.get('/auth/github',gitpassport.authenticate("github",{
+
+  scope: [ 'user:email' ]  }))
+userRouter.get(
+  "/auth/github/callback",
+  gitpassport.authenticate("github", {
+   
+    failureRedirect: "/auth/github/failure",
+  }),(req,res)=>{
+    res.redirect("/")
+  }
+);
+
+
 oauthRouter.get("/", oauthController.googleLogin);
 oauthRouter.get("/callback", oauthController.googleCallback);
