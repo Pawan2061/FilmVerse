@@ -5,6 +5,7 @@ import session from "express-session"
 import { movieRouter } from "./routes/movieRoutes";
 import { reviewRouter } from "./routes/reviewRoutes";
 import { oauthRouter, userRouter } from "./routes/userRoutes";
+import passport from "passport"
 import { watchListRouter } from "./routes/watchlistRouter";
 
 const app = express();
@@ -15,9 +16,14 @@ app.use(
     saveUninitialized: false,
   })
 );
+
+
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.get("/",(req,res)=>{
+  res.send("hello")
+})
 app.use(express.json());
 app.use("/api/user", userRouter);
 app.use("/auth/google", oauthRouter);
